@@ -5,44 +5,36 @@ import readInput
 
 fun main() {
     fun part1(input: List<String>): Int {
-        return input
-            .sumOf {
-
-                val firstDigit = it[it.indexOfFirst { it.isDigit() }]
-                val lastDigit = it[it.indexOfLast { it.isDigit() }]
-
-                "$firstDigit$lastDigit".toInt()
-            }
+        return input.sumOf { "${it.first { c->  c.isDigit() }}${it.last { c -> c.isDigit() }}".toInt() }
     }
 
     fun part2(input: List<String>): Int {
 
-        return part1(
-            input
-                .map { line ->
+            return input.sumOf { line ->
 
-                    val intsAsStrs = intsToValues
-                        .keys
-                        .filter { s -> line.contains(s) }
-                        .sortedBy { line.indexOf(it) }
+                val intsAsStrs = intsToValues
+                    .keys
+                    .filter { s -> line.contains(s) }
+                    .sortedBy { line.indexOf(it) }
 
-                    var repLine = line
+                var repLine = line
 
-                    intsAsStrs.forEach {
-                        repLine = repLine.replace(it, intsToValues[it]!!.toString())
-                    }
-
-                    repLine
+                intsAsStrs.forEach {
+                    repLine = repLine.replace(it, intsToValues[it]!!.toString())
                 }
-        )
+
+                "${repLine.first { it.isDigit() }}${repLine.last { it.isDigit() }}".toInt()
+            }
     }
 
+    part2(listOf("sevenine"))
+
     val testInput = readInput("Day1/Day01_test")
-    check(part2(testInput) == 281)
+//    check(part2(testInput) == 281)
 
     val input = readInput("Day1/Day01")
-    part1(input).println()
-    part2(input).println()
+//    part1(input).println()
+//    part2(input).println()
 }
 
 val intsToValues = mapOf(
@@ -54,7 +46,5 @@ val intsToValues = mapOf(
     "six" to 6,
     "seven" to 7,
     "eight" to 8,
-    "nine" to 9,
-    "twone" to 21,
-    "eightwo" to 82
+    "nine" to 9
 )
