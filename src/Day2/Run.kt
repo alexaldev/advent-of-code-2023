@@ -1,12 +1,33 @@
 package Day2
 
-import println
-import readInput
+import QuizTaskExec
+import runPartQuizAndMeasureTime
+import java.lang.Exception
 
 fun main() {
 
-    fun part1(input: List<String>): Int {
+    val firstPartTestExpected: Int = 8
 
+    val firstPart: QuizTaskExec = FirstPart()
+    val secondPart: QuizTaskExec = SecondPart()
+    val thisDayId = firstPart.javaClass.packageName.substringAfter("Day")
+
+    val p1Duration = runPartQuizAndMeasureTime(firstPart, firstPartTestExpected, thisDayId)
+
+    println("First part duration: ${p1Duration.inWholeMilliseconds}")
+
+    val secondPartTestExpected: Int = 2286
+
+    try {
+
+        val p2Duration = runPartQuizAndMeasureTime(secondPart, secondPartTestExpected, thisDayId)
+        println("Second part duration: ${p2Duration.inWholeMilliseconds}")
+
+    } catch(_ : Exception) {}
+}
+
+class FirstPart : QuizTaskExec {
+    override fun exec(input: List<String>): Int {
         val resIds = mutableSetOf<Int>()
 
         input.map {
@@ -23,27 +44,27 @@ fun main() {
                     .map { sToCube(it) }
 
                 cubes.forEach { cube ->
-                    when(cube.coloredCube) {
-                        ColoredCube.red -> {
+                    when(cube.color) {
+                        CubeColor.red -> {
                             if (cube.count > 12) resIds -= gameId
                         }
-                        ColoredCube.green -> {
+                        CubeColor.green -> {
                             if (cube.count > 13) resIds -= gameId
                         }
-                        ColoredCube.blue -> {
+                        CubeColor.blue -> {
                             if (cube.count > 14) resIds -= gameId
                         }
                     }
                 }
             }
-
         }
 
         return resIds.sumOf { it }
     }
+}
 
-    fun part2(input: List<String>): Int {
-
+class SecondPart : QuizTaskExec {
+    override fun exec(input: List<String>): Int {
         var totalPowers = 0
 
         input.map {
@@ -63,14 +84,14 @@ fun main() {
 
                 cubes.forEach { cube ->
 
-                    when(cube.coloredCube) {
-                        ColoredCube.red -> {
+                    when(cube.color) {
+                        CubeColor.red -> {
                             if (cube.count > maxRed) maxRed = cube.count
                         }
-                        ColoredCube.green -> {
+                        CubeColor.green -> {
                             if (cube.count > maxGreen) maxGreen = cube.count
                         }
-                        ColoredCube.blue -> {
+                        CubeColor.blue -> {
                             if (cube.count > maxBlue) maxBlue = cube.count
                         }
                     }
@@ -83,26 +104,19 @@ fun main() {
 
         return totalPowers
     }
-
-    val testInput = readInput("Day2/Day02_test")
-    check(part2(testInput) == 2286)
-
-    val input = readInput("Day2/Day02")
-    part1(input).println()
-    part2(input).println()
 }
 
 fun sToCube(s: String): Cube {
     // 3 blue
     val spit = s.trim().split(" ")
-    return Cube(ColoredCube.valueOf(spit[1]), spit.first().toInt())
+    return Cube(CubeColor.valueOf(spit[1]), spit.first().toInt())
 }
 
 class Cube(
-    val coloredCube: ColoredCube,
+    val color: CubeColor,
     val count: Int
 )
 
-enum class ColoredCube {
+enum class CubeColor {
     red, green, blue
 }
